@@ -6,6 +6,16 @@
   height: 40vmin;
   pointer-events: none;
 }
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.generate-button {
+  width: 140px;
+  margin-bottom: 12px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
