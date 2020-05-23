@@ -13,8 +13,8 @@ export enum Ground {
 }
 
 export default class Course {
-  public height: number = 780;
-  public width: number = 780;
+  public height = 780;
+  public width = 780;
   public terrain: (Ground | null)[][] = [];
 
   public fairwayOutline: Point[] = [];
@@ -22,13 +22,10 @@ export default class Course {
 
   constructor() {
     this.initializeArray();
-    const basePath: Point[] = this.generateBasePath();
+    const basePath = this.generateBasePath();
 
-    const rough: Spline = this.generateRough(
-      basePath,
-      this.getAnchors(basePath, 5)
-    );
-    const fairway: Spline = this.generateFairway(
+    const rough = this.generateRough(basePath, this.getAnchors(basePath, 5));
+    const fairway = this.generateFairway(
       basePath,
       this.getAnchors(basePath, 2)
     );
@@ -48,37 +45,37 @@ export default class Course {
   }
 
   private initializeArray(): void {
-    for (let i: number = 0; i < this.height; i++) {
+    for (let i = 0; i < this.height; i++) {
       this.terrain[i] = [];
-      for (let j: number = 0; j < this.width; j++) {
+      for (let j = 0; j < this.width; j++) {
         this.terrain[i][j] = null;
       }
     }
   }
 
   private generateBasePath(): Point[] {
-    const hBound: number = 240;
-    const upperBound: number = this.getRandomInt(120, 180);
-    const lowerBound: number = this.getRandomInt(120, 180);
+    const hBound = 240;
+    const upperBound = this.getRandomInt(120, 180);
+    const lowerBound = this.getRandomInt(120, 180);
 
     const path: Point[] = [];
     path.push(
       new Point(this.getRandomInt(hBound, this.width - hBound), upperBound)
     );
+
     let lastMove: Point | undefined = undefined;
 
     while (path[path.length - 1].y < this.height - lowerBound) {
-      const moves: Point[] = [
-        new Point(-20, 20),
-        new Point(0, 10),
-        new Point(20, 20),
-      ];
+      const moves = [new Point(-20, 20), new Point(0, 10), new Point(20, 20)];
       let move: Point;
 
-      if (path[path.length - 1].x < hBound) moves[0] = new Point(0, 10);
+      if (path[path.length - 1].x < hBound) {
+        moves[0] = new Point(0, 10);
+      }
 
-      if (path[path.length - 1].x > this.width - hBound)
+      if (path[path.length - 1].x > this.width - hBound) {
         moves[2] = new Point(0, 10);
+      }
 
       if (lastMove === undefined || lastMove.x === 0) {
         move = moves[this.getRandomInt(0, 3)];
@@ -101,7 +98,7 @@ export default class Course {
   }
 
   private getAnchors(path: Point[], count: number): Point[] {
-    const interval: number = Math.floor(path.length / count - 1);
+    const interval = Math.floor(path.length / count - 1);
     const anchors: Point[] = [];
 
     for (let t = 0; t < (count - 1) * interval + 1; t += interval) {
@@ -114,7 +111,7 @@ export default class Course {
   }
 
   private generateRough(path: Point[], anchors: Point[]): Spline {
-    const rough: Spline = new Spline();
+    const rough = new Spline();
     let i = 0;
     anchors.forEach((anchor, j) => {
       const widthMin: number = this.getRandomInt(140, 180);
@@ -142,9 +139,9 @@ export default class Course {
   }
 
   private generateFairway(path: Point[], anchors: Point[]): Spline {
-    const widthMin: number = 50;
-    const widthMax: number = 70;
-    const fairway: Spline = new Spline();
+    const widthMin = 50;
+    const widthMax = 70;
+    const fairway = new Spline();
 
     for (let i = 0; i < anchors.length; i++) {
       const widthLeft: number = this.getRandomInt(widthMin, widthMax);
@@ -191,8 +188,8 @@ export default class Course {
   }
 
   private generateGreen(origin: Point, radius: number): void {
-    for (let y: number = -radius; y <= radius; y++)
-      for (let x: number = -radius; x <= radius; x++)
+    for (let y = -radius; y <= radius; y++) {
+      for (let x = -radius; x <= radius; x++) {
         if (x * x + y * y < radius * radius) {
           if (x * x + y * y < (radius - 20) * (radius - 20)) {
             this.terrain[origin.y + y][origin.x + x] = Ground.GREEN;
@@ -200,46 +197,17 @@ export default class Course {
             this.terrain[origin.y + y][origin.x + x] = Ground.FAIRWAY;
           }
         }
-  }
-
-  private outlineFromPath(points: Point[], ground: Ground): void {
-    for (let point of points) {
-      this.terrain[point.y][point.x] = ground;
+      }
     }
   }
 
   private outlineFromSpline(spline: Spline): Point[] {
     const array: Point[] = [];
-    for (let t = 0; t < spline.points.length; t += 0.005) {
+    for (let t = 0; t < spline.points.length; t += 0.2) {
       const pos: Point = spline.getSplinePoint(t, true);
       array.push(new Point(pos.y, pos.x));
     }
     return array;
-  }
-
-  private fill(spline: Spline, ground: Ground): void {
-    const outline: Point[] = [];
-    for (let t = 0; t < spline.points.length; t += 0.005) {
-      const pos: Point = spline.getSplinePoint(t, true);
-      this.terrain[pos.y][pos.x] = ground;
-      outline.push(pos);
-    }
-
-    for (let i = 0; i < this.height; i++) {
-      const line: Point[] = outline.filter((point) => point.y === i);
-      if (line.length === 0) continue;
-
-      const leftmost: Point = line.reduce((prev, curr) =>
-        prev.x < curr.x ? prev : curr
-      );
-      const rightmost: Point = line.reduce((prev, curr) =>
-        prev.x > curr.x ? prev : curr
-      );
-
-      for (let j: number = leftmost.x; j <= rightmost.x; j++) {
-        this.terrain[i][j] = ground;
-      }
-    }
   }
 
   private getRandomInt(min: number, max: number) {
