@@ -5,6 +5,7 @@ import Course from "./logic/models/course";
 import Point from "./logic/models/point";
 import useWindowDimensions from "./logic/useWindowDimensions";
 import SpringComponent from "./SpringComponent";
+import { Button } from "antd";
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -103,8 +104,33 @@ function App() {
     );
   };
 
+  const reset = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation();
+    setIsFirstGen(true);
+    setHolePoint(new Point(390, 390));
+    setHole("M 388 390 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0");
+    setTee("M 385 390 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0");
+    setGreenPath("M 380 390 a 10 10 0 1 0 20 0 a 10 10 0 1 0 -20 0");
+    setTeePath("M 380 390 a 10 10 0 1 0 20 0 a 10 10 0 1 0 -20 0");
+    setFairwayPath("M 370 390 a 20 20 0 1 0 40 0 a 20 20 0 1 0 -40 0");
+    setRoughPath("M 350 390 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0");
+    setForestPath(
+      `M ${width / 2 - 60} ${
+        height / 2
+      } a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0`
+    );
+  };
+
   return (
     <div className="container" onClick={getCourse}>
+      <Button
+        type="link"
+        style={{ zIndex: 1, backgroundColor: "transparent", color: "#9CC365" }}
+        onClick={reset}
+      >
+        Clear
+      </Button>
+
       <svg
         style={{ position: "fixed", top: 0, left: 0 }}
         viewBox={`0 0 ${width} ${height}`}
