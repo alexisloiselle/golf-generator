@@ -19,6 +19,8 @@ export default class Course {
 
   public fairwayOutline: Point[] = [];
   public roughOutline: Point[] = [];
+  public teeCenter: Point;
+  public greenCenter: Point;
 
   constructor() {
     this.initializeArray();
@@ -33,12 +35,8 @@ export default class Course {
     this.roughOutline = this.outlineFromSpline(rough);
     this.fairwayOutline = this.outlineFromSpline(fairway);
 
-    // this.generateGreen(basePath[basePath.length - 1], 4);
-    // this.terrain[basePath[basePath.length - 1].y][
-    //   basePath[basePath.length - 1].x
-    // ] = Ground.FAIRWAY;
-    // this.generateGreen(basePath[0], 6);
-    // this.terrain[basePath[0].y][basePath[0].x] = Ground.HOLE;
+    this.teeCenter = basePath[basePath.length - 1];
+    this.greenCenter = basePath[0];
     // this.terrain[basePath[0].y - 1][basePath[0].x] = Ground.FLAG_BASE;
     // this.terrain[basePath[0].y - 2][basePath[0].x] = Ground.FLAG_BASE;
     // this.terrain[basePath[0].y - 2][basePath[0].x + 1] = Ground.FLAG;
@@ -187,18 +185,19 @@ export default class Course {
     return fairway;
   }
 
-  private generateGreen(origin: Point, radius: number): void {
+  private generateGreen(origin: Point, radius: number): Point[] {
+    const points: Point[] = [];
     for (let y = -radius; y <= radius; y++) {
       for (let x = -radius; x <= radius; x++) {
         if (x * x + y * y < radius * radius) {
           if (x * x + y * y < (radius - 20) * (radius - 20)) {
-            this.terrain[origin.y + y][origin.x + x] = Ground.GREEN;
-          } else {
-            this.terrain[origin.y + y][origin.x + x] = Ground.FAIRWAY;
+            points.push(new Point(origin.y + y, origin.x + x));
           }
         }
       }
     }
+
+    return points;
   }
 
   private outlineFromSpline(spline: Spline): Point[] {
