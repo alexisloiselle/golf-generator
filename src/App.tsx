@@ -14,12 +14,17 @@ function usePrevious<T>(value: T) {
   return ref.current;
 }
 
+const getPolePath = (point: Point) => `M ${point.x} ${point.y} l 0 -45`;
+const getFlagPath = (point: Point) =>
+  `M ${point.x} ${point.y - 45} l 18 6 l -18 6 z`;
+
 function App() {
   const { width, height } = useWindowDimensions();
   const [isFirstGen, setIsFirstGen] = useState(true);
 
+  const [holePoint, setHolePoint] = useState(new Point(390, 390));
   const [hole, setHole] = useState(
-    "M 388 390 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0"
+    "M 388 390 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0"
   );
   const [tee, setTee] = useState(
     "M 385 390 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0"
@@ -40,6 +45,7 @@ function App() {
     `M ${width / 2 - 60} ${height / 2} a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0`
   );
 
+  const prevHolePoint = usePrevious(holePoint) || holePoint;
   const prevHole = usePrevious(hole) || hole;
   const prevTee = usePrevious(tee) || tee;
   const prevGreen = usePrevious(greenPath) || greenPath;
@@ -82,9 +88,11 @@ function App() {
     const {
       teeCenter: { x: teeX, y: teeY },
       greenCenter: { x: gX, y: gY },
+      greenCenter,
     } = course;
+    setHolePoint(greenCenter);
     setGreenPath(`M ${gX - 30} ${gY} a 30 30 0 1 0 60 0 a 30 30 0 1 0 -60 0`);
-    setHole(`M ${gX - 2} ${gY} a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0`);
+    setHole(`M ${gX - 2.5} ${gY} a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0`);
     setTeePath(`M ${teeX - 20} ${teeY} a 20 20 0 1 0 40 0 a 20 20 0 1 0 -40 0`);
     setTee(`M ${teeX - 5} ${teeY} a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0`);
     setFairwayPath(
@@ -157,6 +165,36 @@ function App() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <SpringComponent from={prevHole} to={hole} />
+      </svg>
+      <svg
+        style={{ position: "fixed", top: 0, left: 0 }}
+        viewBox="0 0 780 780"
+        width={width}
+        height={height}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <SpringComponent
+          from={getPolePath(prevHolePoint)}
+          to={getPolePath(holePoint)}
+          style={{ strokeWidth: 2, stroke: "black" }}
+        />
+        <SpringComponent
+          from={getFlagPath(prevHolePoint)}
+          to={getFlagPath(holePoint)}
+          style={{
+            stroke: "#DD4D4B",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+          }}
+        />
+        <SpringComponent
+          from={getFlagPath(prevHolePoint)}
+          to={getFlagPath(holePoint)}
+          style={{
+            fill: "#DD4D4B",
+          }}
+        />
       </svg>
     </div>
   );

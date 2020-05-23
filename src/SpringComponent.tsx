@@ -6,8 +6,13 @@ import { AnimatedValue } from "react-spring";
 interface Props {
   from: string;
   to: string;
+  style?: React.CSSProperties;
 }
-const SpringComponent: React.FunctionComponent<Props> = ({ from, to }) => {
+const SpringComponent: React.FunctionComponent<Props> = ({
+  from,
+  to,
+  style,
+}) => {
   const interpolator = interpolate(from, to);
 
   return (
@@ -18,7 +23,7 @@ const SpringComponent: React.FunctionComponent<Props> = ({ from, to }) => {
       to={{ t: 1 } as AnimatedValue<{ t: number }>}
     >
       {({ t }: AnimatedValue<{ t: number }>) => (
-        <animated.path d={t.interpolate(interpolator)} />
+        <animated.path style={style} d={t.interpolate(interpolator)} />
       )}
     </Spring>
   );
