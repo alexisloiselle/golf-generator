@@ -1,8 +1,30 @@
-# Roadmap
+# [Golf generator](https://alexisloiselle.github.io/golf-generator)
 
-- [] Create SVG path from splines
-- [] Animate SVG from little circle to golf course
-- [] Stack SVG for fairway, rough and forest
-- [] Add pin, green and flag
-- [] Add inputs for anchors and spline precision
-- [] Overall UI
+## Made with
+- flubber
+- react-spring
+- [golf-generator](https://github.com/wsvgny/golfgenerator)
+- too much time...
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+([Less impressive project](https://github.com/alexisloiselle/golf-generator-wasm))

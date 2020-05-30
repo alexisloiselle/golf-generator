@@ -15,7 +15,6 @@ export enum Ground {
 export default class Course {
   public height = 780;
   public width = 780;
-  public terrain: (Ground | null)[][] = [];
 
   public fairwayOutline: Point[] = [];
   public roughOutline: Point[] = [];
@@ -23,7 +22,6 @@ export default class Course {
   public greenCenter: Point;
 
   constructor() {
-    this.initializeArray();
     const basePath = this.generateBasePath();
 
     const rough = this.generateRough(basePath, this.getAnchors(basePath, 5));
@@ -37,18 +35,6 @@ export default class Course {
 
     this.teeCenter = basePath[basePath.length - 1];
     this.greenCenter = basePath[0];
-    // this.terrain[basePath[0].y - 1][basePath[0].x] = Ground.FLAG_BASE;
-    // this.terrain[basePath[0].y - 2][basePath[0].x] = Ground.FLAG_BASE;
-    // this.terrain[basePath[0].y - 2][basePath[0].x + 1] = Ground.FLAG;
-  }
-
-  private initializeArray(): void {
-    for (let i = 0; i < this.height; i++) {
-      this.terrain[i] = [];
-      for (let j = 0; j < this.width; j++) {
-        this.terrain[i][j] = null;
-      }
-    }
   }
 
   private generateBasePath(): Point[] {
