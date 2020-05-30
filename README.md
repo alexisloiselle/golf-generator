@@ -27,4 +27,4 @@
 <br/>
 <br/>
 
-([Less impressive project](https://github.com/alexisloiselle/golf-generator-wasm))
+([More impressive project](https://github.com/alexisloiselle/golf-generator-wasm))
